@@ -42,10 +42,11 @@ resource "oci_core_instance" "this" {
     hostname_label = each.value.hostname_label
 
     nsg_ids = each.value.nsg_ids
+
   }
 
   ########################################
-  # Flex Shapes
+  # Flex Shape Support
   ########################################
 
   dynamic "shape_config" {
@@ -79,6 +80,7 @@ resource "oci_core_instance" "this" {
     )
 
     user_data = each.value.user_data
+
   }
 
   ########################################
@@ -96,6 +98,7 @@ resource "oci_core_instance" "this" {
     boot_volume_size_in_gbs = each.value.boot_vol_size_gbs
 
     kms_key_id = each.value.kms_key_id
+
   }
 
   ########################################
@@ -120,27 +123,18 @@ resource "oci_core_instance" "this" {
 }
 
 ########################################
-# Block Volume Attachment Mapping
+# Block Volume Attachments
 ########################################
 
-locals {
+resource "oci_core_volume_attachment" "this" {
 
-  block_volume_attachments = flatten([
+  for_each = {
 
-    for inst_name, inst in var.instances : [
+    for vol in local.block_volume_attachments :
 
-      for vol in inst.block_volumes : {
+    "${vol.instance_name}-${vol.volume_id}" => vol
 
-        instance_name   = inst_name
-        volume_id       = vol.volume_id
-        attachment_type = vol.attachment_type
-
-      }
-
-    ]
-
-  ])
-}
+  }
 
   attachment_type = each.value.attachment_type
 
@@ -149,4 +143,29 @@ locals {
   ].id
 
   volume_id = each.value.volume_id
+
+}
+
+########################################
+# Primary VNIC Information
+########################################
+
+data "oci_core_vnic_attachments" "this" {
+
+  for_each = oci_core_instance.this
+
+  compartment_id = each.value.compartment_id
+
+  instance_id = each.value.id
+
+}
+
+data "oci_core_vnic" "this" {
+
+  for_each = oci_core_instance.this
+
+  vnic_id = data.oci_core_vnic_attachments.this[
+    each.key
+  ].vnic_attachments[0].vnic_id
+
 }
