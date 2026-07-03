@@ -10,4 +10,6 @@ module "compute" {
 
   default_freeform_tags = local.common_freeform_tags
 
+  instances = var.instances
+
 }
