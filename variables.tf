@@ -11,11 +11,19 @@ variable "default_compartment_id" {
 }
 
 variable "default_defined_tags" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
 
 variable "default_freeform_tags" {
-  type = map(string)
+  type    = map(string)
   default = {}
+}
+
+variable "instances" {
+
+  description = "Compute instances configuration"
+
+  type = any
+
 }
