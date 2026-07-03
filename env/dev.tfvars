@@ -1,13 +1,20 @@
-region = "ap-hyderabad-1"
+instances = {
 
-environment = "dev"
+  app01 = {
 
-default_compartment_id = "ocid1.compartment.oc1..."
+    shape = "VM.Standard.E5.Flex"
 
-default_defined_tags = {
-  CostCenter = "IT"
-}
+    ocpus = 1
 
-default_freeform_tags = {
-  Owner = "CloudTeam"
+    memory_in_gbs = 8
+
+    subnet_id = "ocid1.subnet..."
+
+    source_id = "ocid1.image..."
+
+    ssh_authorized_keys = [
+      "./keys/app01.pub"
+    ]
+  }
+
 }
