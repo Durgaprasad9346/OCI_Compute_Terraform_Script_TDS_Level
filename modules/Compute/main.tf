@@ -142,20 +142,6 @@ locals {
   ])
 }
 
-########################################
-# Block Volume Attachments
-########################################
-
-resource "oci_core_volume_attachment" "this" {
-
-  for_each = {
-
-    for vol in local.block_volume_attachments :
-
-    "${vol.instance_name}-${vol.volume_id}" => vol
-
-  }
-
   attachment_type = each.value.attachment_type
 
   instance_id = oci_core_instance.this[
