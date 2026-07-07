@@ -1,6 +1,6 @@
-module "compute" {
+module "Compute" {
 
-  source = "./modules/compute"
+  source = "./modules/Compute"
 
   environment = var.environment
 
