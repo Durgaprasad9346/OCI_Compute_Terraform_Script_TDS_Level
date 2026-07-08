@@ -158,6 +158,10 @@ data "oci_core_vnic_attachments" "this" {
 
   instance_id = each.value.id
 
+  depends_on = [
+    oci_core_instance.this
+  ]
+
 }
 
 data "oci_core_vnic" "this" {
