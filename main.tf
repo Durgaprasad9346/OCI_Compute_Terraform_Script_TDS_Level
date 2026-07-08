@@ -1,4 +1,4 @@
-module "Compute" {
+module "compute" {
 
   source = "./modules/Compute"
 
