@@ -69,20 +69,19 @@ resource "oci_core_instance" "this" {
   # Metadata
   ########################################
 
-  metadata = {
+ metadata = {
 
-    ssh_authorized_keys = join(
-      "\n",
-      [
-        for key in each.value.ssh_authorized_keys :
-        chomp(file(key))
-      ]
-    )
+  ssh_authorized_keys = join(
+    "\n",
+    [
+      for key in each.value.ssh_authorized_keys :
+      chomp(file(key))
+    ]
+  )
 
-    user_data = each.value.user_data
+  user_data = try(each.value.user_data, null)
 
-  }
-
+}
   ########################################
   # Source Details
   ########################################
