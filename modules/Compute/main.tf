@@ -25,6 +25,13 @@ resource "oci_core_instance" "this" {
 
   shape = each.value.shape
 
+agent_config {
+
+  is_monitoring_disabled = false
+
+}
+
+
   fault_domain = each.value.fault_domain
 
   ########################################
