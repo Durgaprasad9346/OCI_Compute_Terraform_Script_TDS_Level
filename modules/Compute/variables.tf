@@ -50,6 +50,7 @@ variable "instances" {
     nsg_ids = optional(list(string), [])
 
     # SSH
+    # For imported instances this can remain empty.
     ssh_authorized_keys = optional(list(string), [])
 
     # User Data
@@ -58,7 +59,7 @@ variable "instances" {
     # Instance Source
     instance_source_type = optional(string, "image")
 
-    source_id = string
+    source_id = optional(string)
 
     boot_vol_size_gbs = optional(number)
 
@@ -72,7 +73,7 @@ variable "instances" {
     freeform_tags = optional(map(string), {})
 
     # Block Volume Attachments
-    # We will use this in a later phase.
+    # Will be used in a later phase.
     block_volumes = optional(list(object({
 
       volume_id = string
