@@ -50,13 +50,9 @@ variable "instances" {
     nsg_ids = optional(list(string), [])
 
     # SSH
-    # For imported instances, metadata management can remain disabled.
+    # Retained for variable compatibility,
+    # but NOT used by main.tf.
     ssh_authorized_keys = optional(list(string), [])
-
-    # Controls whether Terraform manages SSH/user-data metadata.
-    # false = adoption/import mode
-    # true  = new resource provisioning mode
-    manage_metadata = optional(bool, false)
 
     # User Data
     user_data = optional(string)
@@ -78,7 +74,6 @@ variable "instances" {
     freeform_tags = optional(map(string), {})
 
     # Block Volume Attachments
-    # Will be used in a later phase.
     block_volumes = optional(list(object({
 
       volume_id = string
