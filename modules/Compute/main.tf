@@ -81,9 +81,7 @@ resource "oci_core_instance" "this" {
   # Metadata
   ########################################
 
-  metadata = (
-    each.value.manage_metadata
-  ) ? merge(
+  metadata = merge(
 
     length(each.value.ssh_authorized_keys) > 0 ? {
       ssh_authorized_keys = join(
@@ -98,8 +96,7 @@ resource "oci_core_instance" "this" {
     each.value.user_data != null ? {
       user_data = each.value.user_data
     } : {}
-
-  ) : null
+  )
 
   ########################################
   # Source Details
@@ -125,18 +122,14 @@ resource "oci_core_instance" "this" {
   preserve_boot_volume = each.value.preserve_boot_volume
 
   ########################################
-  # Tags
+  # IMPORTANT:
+  # Do NOT specify defined_tags or freeform_tags
+  # here.
+  #
+  # This allows existing OCI tags, including
+  # cost-tracking tags and Oracle system tags,
+  # to remain untouched.
   ########################################
-
-  defined_tags = merge(
-    var.default_defined_tags,
-    each.value.defined_tags
-  )
-
-  freeform_tags = merge(
-    var.default_freeform_tags,
-    each.value.freeform_tags
-  )
 }
 
 ########################################
