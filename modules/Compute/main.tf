@@ -1,192 +1,53 @@
-########################################
-# Availability Domains
-########################################
+region = "ap-hyderabad-1"
 
-data "oci_identity_availability_domains" "this" {
-  compartment_id = var.default_compartment_id
+environment = "dev"
+
+default_compartment_id = "ocid1.compartment.oc1..aaaaaaaagzp6vtpqdhc6zoq2fq7qfogi3esw6upczmyz5eu544wdkwuot5wa"
+
+default_defined_tags = {
+  CostCenter = "IT"
 }
 
-########################################
-# Compute Instances
-########################################
+default_freeform_tags = {
+  ManagedBy = "Terraform"
+}
 
-resource "oci_core_instance" "this" {
+instances = {
 
-  for_each = var.instances
+  AUTOMATION_VM = {
 
-  availability_domain = data.oci_identity_availability_domains.this.availability_domains[
-    each.value.ad
-  ].name
+    ad = 0
 
-  compartment_id = coalesce(
-    each.value.compartment_id,
-    var.default_compartment_id
-  )
+    shape = "VM.Standard3.Flex"
 
-  display_name = each.key
+    ocpus = 1
 
-  shape = each.value.shape
+    memory_in_gbs = 8
 
-  ########################################
-  # Agent Configuration
-  ########################################
+    subnet_id = "ocid1.subnet.oc1.ap-hyderabad-1.aaaaaaaa4tbbqgeqtrl5av7txggtmpi7ehjpzbzfxvpxjdwbnp7fbttzilwa"
 
-  agent_config {
-    is_monitoring_disabled = false
-  }
+    assign_public_ip = false
 
-  ########################################
-  # Fault Domain
-  ########################################
+    private_ip = "10.81.245.131"
 
-  fault_domain = each.value.fault_domain
+    hostname_label = "automation-vm"
 
-  ########################################
-  # Primary VNIC
-  ########################################
-
-  create_vnic_details {
-
-    subnet_id = each.value.subnet_id
-
-    assign_public_ip = each.value.assign_public_ip
-
-    private_ip = each.value.private_ip
-
-    hostname_label = each.value.hostname_label
-
-    nsg_ids = each.value.nsg_ids
-  }
-
-  ########################################
-  # Flex Shape Support
-  ########################################
-
-  dynamic "shape_config" {
-
-    for_each = (
-      each.value.ocpus != null &&
-      each.value.memory_in_gbs != null
-    ) ? [1] : []
-
-    content {
-
-      ocpus = each.value.ocpus
-
-      memory_in_gbs = each.value.memory_in_gbs
-    }
-  }
-
-  ########################################
-  # Metadata
-  ########################################
-
-  metadata = merge(
-
-    length(each.value.ssh_authorized_keys) > 0 ? {
-      ssh_authorized_keys = join(
-        "\n",
-        [
-          for key in each.value.ssh_authorized_keys :
-          chomp(file(key))
-        ]
-      )
-    } : {},
-
-    each.value.user_data != null ? {
-      user_data = each.value.user_data
-    } : {}
-  )
-
-  ########################################
-  # Source Details
-  ########################################
-
-  source_details {
-
-    source_type = (
-      each.value.instance_source_type == "boot_volume"
-    ) ? "bootVolume" : "image"
-
-    source_id = each.value.source_id
-
-    boot_volume_size_in_gbs = each.value.boot_vol_size_gbs
-
-    kms_key_id = each.value.kms_key_id
-  }
-
-  ########################################
-  # Boot Volume
-  ########################################
-
-  preserve_boot_volume = each.value.preserve_boot_volume
-
-  ########################################
-  # Lifecycle
-  ########################################
-  # The existing server already has SSH metadata.
-  # Ignore metadata differences so Terraform does
-  # not try to replace the existing instance.
-
-  lifecycle {
-    ignore_changes = [
-      metadata
+    nsg_ids = [
+      "ocid1.networksecuritygroup.oc1.ap-hyderabad-1.aaaaaaaatn52awpklwsl7kkhgud3l2bznnfkf43hwjqytv7axtn5zem3moma",
+      "ocid1.networksecuritygroup.oc1.ap-hyderabad-1.aaaaaaaasn7zvz3x2ukwuj5fltbv3cwqkpo4n3vaqv4czq6xmvqatiybnxaq",
+      "ocid1.networksecuritygroup.oc1.ap-hyderabad-1.aaaaaaaayzcpgi323giywesfchddspwf5p3fwhtfcrinbunrpvjmeizzjv2a"
     ]
+
+    instance_source_type = "image"
+
+    source_id = "ocid1.image.oc1.ap-hyderabad-1.aaaaaaaa6xyf6ag6zinwtpknixxlu6mjdjfbiowjefkkxscjmelfs2mmmg6a"
+
+    boot_vol_size_gbs = 47
+
+    preserve_boot_volume = true
+
+    ssh_authorized_keys = []
+
   }
 
-  ########################################
-  # Tags
-  ########################################
-  # IMPORTANT:
-  # Do not define defined_tags/freeform_tags here.
-  #
-  # This prevents Terraform from removing existing
-  # OCI/system/cost-tracking tags.
-
-}
-
-########################################
-# Block Volume Attachments
-########################################
-
-resource "oci_core_volume_attachment" "this" {
-
-  for_each = {
-    for vol in local.block_volume_attachments :
-    "${vol.instance_name}-${vol.volume_id}" => vol
-  }
-
-  attachment_type = each.value.attachment_type
-
-  instance_id = oci_core_instance.this[
-    each.value.instance_name
-  ].id
-
-  volume_id = each.value.volume_id
-}
-
-########################################
-# Primary VNIC Information
-########################################
-
-data "oci_core_vnic_attachments" "this" {
-
-  for_each = oci_core_instance.this
-
-  compartment_id = each.value.compartment_id
-
-  instance_id = each.value.id
-
-  depends_on = [
-    oci_core_instance.this
-  ]
-}
-
-data "oci_core_vnic" "this" {
-
-  for_each = oci_core_instance.this
-
-  vnic_id = data.oci_core_vnic_attachments.this[
-    each.key
-  ].vnic_attachments[0].vnic_id
 }
