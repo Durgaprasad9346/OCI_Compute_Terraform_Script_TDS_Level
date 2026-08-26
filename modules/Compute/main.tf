@@ -14,7 +14,9 @@ resource "oci_core_instance" "this" {
 
   for_each = var.instances
 
-  availability_domain = data.oci_identity_availability_domains.this.availability_domains[each.value.ad].name
+  availability_domain = data.oci_identity_availability_domains.this.availability_domains[
+    each.value.ad
+  ].name
 
   compartment_id = coalesce(
     each.value.compartment_id,
@@ -25,12 +27,17 @@ resource "oci_core_instance" "this" {
 
   shape = each.value.shape
 
-agent_config {
+  ########################################
+  # Agent Configuration
+  ########################################
 
-  is_monitoring_disabled = false
+  agent_config {
+    is_monitoring_disabled = false
+  }
 
-}
-
+  ########################################
+  # Fault Domain
+  ########################################
 
   fault_domain = each.value.fault_domain
 
@@ -49,7 +56,6 @@ agent_config {
     hostname_label = each.value.hostname_label
 
     nsg_ids = each.value.nsg_ids
-
   }
 
   ########################################
@@ -68,7 +74,6 @@ agent_config {
       ocpus = each.value.ocpus
 
       memory_in_gbs = each.value.memory_in_gbs
-
     }
   }
 
@@ -76,19 +81,29 @@ agent_config {
   # Metadata
   ########################################
 
- metadata = {
+  dynamic "metadata" {
 
-  ssh_authorized_keys = join(
-    "\n",
-    [
-      for key in each.value.ssh_authorized_keys :
-      chomp(file(key))
-    ]
-  )
+    for_each = (
+      length(each.value.ssh_authorized_keys) > 0 ||
+      each.value.user_data != null
+    ) ? [1] : []
 
-  user_data = try(each.value.user_data, null)
+    content {
 
-}
+      ssh_authorized_keys = (
+        length(each.value.ssh_authorized_keys) > 0
+      ) ? join(
+        "\n",
+        [
+          for key in each.value.ssh_authorized_keys :
+          chomp(file(key))
+        ]
+      ) : null
+
+      user_data = each.value.user_data
+    }
+  }
+
   ########################################
   # Source Details
   ########################################
@@ -104,7 +119,6 @@ agent_config {
     boot_volume_size_in_gbs = each.value.boot_vol_size_gbs
 
     kms_key_id = each.value.kms_key_id
-
   }
 
   ########################################
@@ -139,7 +153,6 @@ resource "oci_core_volume_attachment" "this" {
     for vol in local.block_volume_attachments :
 
     "${vol.instance_name}-${vol.volume_id}" => vol
-
   }
 
   attachment_type = each.value.attachment_type
@@ -149,7 +162,6 @@ resource "oci_core_volume_attachment" "this" {
   ].id
 
   volume_id = each.value.volume_id
-
 }
 
 ########################################
@@ -167,7 +179,6 @@ data "oci_core_vnic_attachments" "this" {
   depends_on = [
     oci_core_instance.this
   ]
-
 }
 
 data "oci_core_vnic" "this" {
@@ -177,5 +188,4 @@ data "oci_core_vnic" "this" {
   vnic_id = data.oci_core_vnic_attachments.this[
     each.key
   ].vnic_attachments[0].vnic_id
-
 }
