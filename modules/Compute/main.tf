@@ -122,14 +122,27 @@ resource "oci_core_instance" "this" {
   preserve_boot_volume = each.value.preserve_boot_volume
 
   ########################################
-  # IMPORTANT:
-  # Do NOT specify defined_tags or freeform_tags
-  # here.
-  #
-  # This allows existing OCI tags, including
-  # cost-tracking tags and Oracle system tags,
-  # to remain untouched.
+  # Lifecycle
   ########################################
+  # The existing server already has SSH metadata.
+  # Ignore metadata differences so Terraform does
+  # not try to replace the existing instance.
+
+  lifecycle {
+    ignore_changes = [
+      metadata
+    ]
+  }
+
+  ########################################
+  # Tags
+  ########################################
+  # IMPORTANT:
+  # Do not define defined_tags/freeform_tags here.
+  #
+  # This prevents Terraform from removing existing
+  # OCI/system/cost-tracking tags.
+
 }
 
 ########################################
