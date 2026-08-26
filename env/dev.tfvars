@@ -5,7 +5,8 @@ environment = "dev"
 default_compartment_id = "ocid1.compartment.oc1..aaaaaaaagzp6vtpqdhc6zoq2fq7qfogi3esw6upczmyz5eu544wdkwuot5wa"
 
 default_defined_tags = {
-  CostCenter = "IT"
+  CostCenter  = "IT"
+  Environment = "dev"
 }
 
 default_freeform_tags = {
@@ -46,14 +47,10 @@ instances = {
 
     preserve_boot_volume = true
 
+    # Intentionally empty.
+    # Existing SSH key on the server is not managed by Terraform.
     ssh_authorized_keys = []
 
-    defined_tags = {
-      CostCenter = "IT"
-    }
-
-    freeform_tags = {
-      ManagedBy = "Terraform"
-    }
   }
+
 }
