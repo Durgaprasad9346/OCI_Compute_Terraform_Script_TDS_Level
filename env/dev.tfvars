@@ -4,6 +4,14 @@ environment = "dev"
 
 default_compartment_id = "ocid1.compartment.oc1..aaaaaaaagzp6vtpqdhc6zoq2fq7qfogi3esw6upczmyz5eu544wdkwuot5wa"
 
+default_defined_tags = {
+  CostCenter = "IT"
+}
+
+default_freeform_tags = {
+  ManagedBy = "Terraform"
+}
+
 instances = {
 
   AUTOMATION_VM = {
@@ -40,6 +48,12 @@ instances = {
 
     ssh_authorized_keys = []
 
-  }
+    defined_tags = {
+      CostCenter = "IT"
+    }
 
+    freeform_tags = {
+      ManagedBy = "Terraform"
+    }
+  }
 }
