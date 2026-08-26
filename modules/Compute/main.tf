@@ -81,7 +81,9 @@ resource "oci_core_instance" "this" {
   # Metadata
   ########################################
 
-  metadata = merge(
+  metadata = (
+    each.value.manage_metadata
+  ) ? merge(
 
     length(each.value.ssh_authorized_keys) > 0 ? {
       ssh_authorized_keys = join(
@@ -96,7 +98,8 @@ resource "oci_core_instance" "this" {
     each.value.user_data != null ? {
       user_data = each.value.user_data
     } : {}
-  )
+
+  ) : null
 
   ########################################
   # Source Details
