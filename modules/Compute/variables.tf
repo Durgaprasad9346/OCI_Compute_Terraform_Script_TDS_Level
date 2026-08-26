@@ -1,35 +1,44 @@
 variable "environment" {
-  type = string
+  description = "Deployment environment"
+  type        = string
 }
 
 variable "default_compartment_id" {
-  type = string
+  description = "Default compartment OCID"
+  type        = string
 }
 
 variable "default_defined_tags" {
-  type = map(string)
+  description = "Default defined tags"
+  type        = map(string)
+  default     = {}
 }
 
 variable "default_freeform_tags" {
-  type = map(string)
+  description = "Default freeform tags"
+  type        = map(string)
+  default     = {}
 }
 
 variable "instances" {
+  description = "Compute instance configuration"
 
   type = map(object({
 
+    # Availability / Placement
     ad = optional(number, 0)
 
     compartment_id = optional(string)
 
     fault_domain = optional(string)
 
+    # Compute Shape
     shape = string
 
-    ocpus = optional(number)
-
+    ocpus         = optional(number)
     memory_in_gbs = optional(number)
 
+    # Primary VNIC
     subnet_id = string
 
     assign_public_ip = optional(bool, false)
@@ -40,10 +49,13 @@ variable "instances" {
 
     nsg_ids = optional(list(string), [])
 
-    ssh_authorized_keys = list(string)
+    # SSH
+    ssh_authorized_keys = optional(list(string), [])
 
+    # User Data
     user_data = optional(string)
 
+    # Instance Source
     instance_source_type = optional(string, "image")
 
     source_id = string
@@ -54,10 +66,13 @@ variable "instances" {
 
     kms_key_id = optional(string)
 
+    # Tags
     defined_tags = optional(map(string), {})
 
     freeform_tags = optional(map(string), {})
 
+    # Block Volume Attachments
+    # We will use this in a later phase.
     block_volumes = optional(list(object({
 
       volume_id = string
