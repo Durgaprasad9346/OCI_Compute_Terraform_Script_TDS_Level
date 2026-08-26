@@ -70,6 +70,7 @@ resource "oci_core_instance" "this" {
     ) ? [1] : []
 
     content {
+
       ocpus = each.value.ocpus
 
       memory_in_gbs = each.value.memory_in_gbs
@@ -78,24 +79,14 @@ resource "oci_core_instance" "this" {
 
   ########################################
   # Metadata
+  #
+  # IMPORTANT:
+  # SSH authorized keys are intentionally
+  # NOT managed by Terraform.
+  #
+  # Existing SSH key on imported instances
+  # will remain untouched.
   ########################################
-
-  metadata = merge(
-
-    length(each.value.ssh_authorized_keys) > 0 ? {
-      ssh_authorized_keys = join(
-        "\n",
-        [
-          for key in each.value.ssh_authorized_keys :
-          chomp(file(key))
-        ]
-      )
-    } : {},
-
-    each.value.user_data != null ? {
-      user_data = each.value.user_data
-    } : {}
-  )
 
   ########################################
   # Source Details
