@@ -81,28 +81,22 @@ resource "oci_core_instance" "this" {
   # Metadata
   ########################################
 
-  dynamic "metadata" {
+  metadata = merge(
 
-    for_each = (
-      length(each.value.ssh_authorized_keys) > 0 ||
-      each.value.user_data != null
-    ) ? [1] : []
-
-    content {
-
-      ssh_authorized_keys = (
-        length(each.value.ssh_authorized_keys) > 0
-      ) ? join(
+    length(each.value.ssh_authorized_keys) > 0 ? {
+      ssh_authorized_keys = join(
         "\n",
         [
           for key in each.value.ssh_authorized_keys :
           chomp(file(key))
         ]
-      ) : null
+      )
+    } : {},
 
+    each.value.user_data != null ? {
       user_data = each.value.user_data
-    }
-  }
+    } : {}
+  )
 
   ########################################
   # Source Details
@@ -149,9 +143,7 @@ resource "oci_core_instance" "this" {
 resource "oci_core_volume_attachment" "this" {
 
   for_each = {
-
     for vol in local.block_volume_attachments :
-
     "${vol.instance_name}-${vol.volume_id}" => vol
   }
 
