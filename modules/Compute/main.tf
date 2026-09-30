@@ -28,6 +28,22 @@ resource "oci_core_instance" "this" {
   shape = each.value.shape
 
   ########################################
+  # Platform Configuration
+  #
+  # Secure Boot
+  #
+  # VM.Standard3.Flex is an Intel shape,
+  # therefore platform type is INTEL_VM.
+  ########################################
+
+  platform_config {
+
+    type = "INTEL_VM"
+
+    is_secure_boot_enabled = true
+  }
+
+  ########################################
   # Agent Configuration
   ########################################
 
