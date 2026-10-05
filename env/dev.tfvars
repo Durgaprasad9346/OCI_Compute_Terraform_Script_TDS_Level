@@ -2,7 +2,7 @@ region = "ap-hyderabad-1"
 
 environment = "dev"
 
-default_compartment_id = ""
+default_compartment_id = "ocid1.tenancy.oc1..aaaaaaaafhdxwnqamamnvcsnmudrsskljf7ifls2yegl5rcgx4hllgthsm5q"
 
 default_defined_tags = {
   CostCenter  = "IT"
@@ -21,17 +21,26 @@ instances = {
 
   TEST_COMPUTE = {
 
+    ########################################
     # Availability Domain
+    ########################################
+
     ad = 0
 
+    ########################################
     # Compute Shape
+    ########################################
+
     shape = "VM.Standard3.Flex"
 
     ocpus         = 1
     memory_in_gbs = 8
 
+    ########################################
     # Network
-    subnet_id = ""
+    ########################################
+
+    subnet_id = "ocid1.subnet.oc1.ap-hyderabad-1.aaaaaaaajhuqe7jh4lnr2byjvcf4yp45bsf7qsn3wduaqpmf5ggl4zkdxd7a"
 
     assign_public_ip = false
 
@@ -39,17 +48,34 @@ instances = {
 
     nsg_ids = []
 
+    ########################################
     # Instance Source
+    ########################################
+
     instance_source_type = "image"
 
-    source_id = ""
+    source_id = "ocid1.image.oc1.ap-hyderabad-1.aaaaaaaa5atcr2tugcttq7pyapjudk6wi7ojvejrjxxz4pqzmxeoljk4hxha"
 
+    ########################################
     # Boot Volume
+    ########################################
+
     boot_vol_size_gbs = 50
 
     preserve_boot_volume = true
 
+    ########################################
+    # Secure Boot
+    #
+    # C1 = Custom Image Test
+    ########################################
+
+    secure_boot_enabled = false
+
+    ########################################
     # SSH
+    ########################################
+
     ssh_authorized_keys = []
 
   }
