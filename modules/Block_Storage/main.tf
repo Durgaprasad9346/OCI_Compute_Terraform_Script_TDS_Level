@@ -6,7 +6,6 @@ resource "oci_core_volume" "this" {
 
   for_each = var.block_volumes
 
-
   ########################################
   # Compartment
   ########################################
@@ -16,13 +15,11 @@ resource "oci_core_volume" "this" {
     var.default_compartment_id
   )
 
-
   ########################################
   # Availability Domain
   ########################################
 
   availability_domain = each.value.availability_domain
-
 
   ########################################
   # Display Name
@@ -33,20 +30,17 @@ resource "oci_core_volume" "this" {
     each.key
   )
 
-
   ########################################
   # Volume Size
   ########################################
 
   size_in_gbs = each.value.size_in_gbs
 
-
   ########################################
   # Volume Performance
   ########################################
 
   vpus_per_gb = each.value.vpus_per_gb
-
 
   ########################################
   # Encryption
@@ -59,7 +53,6 @@ resource "oci_core_volume" "this" {
   ########################################
 
   kms_key_id = each.value.kms_key_id
-
 
   ########################################
   # Volume Source
@@ -74,9 +67,11 @@ resource "oci_core_volume" "this" {
 
   dynamic "source_details" {
 
-    for_each = lower(each.value.source.type) == "volumebackup"
+    for_each = (
+      lower(each.value.source.type) == "volumebackup"
       ? [1]
       : []
+    )
 
     content {
 
@@ -107,7 +102,6 @@ resource "oci_core_volume_backup_policy_assignment" "this" {
 
   }
 
-
   ########################################
   # Volume to which policy is assigned
   ########################################
@@ -115,7 +109,6 @@ resource "oci_core_volume_backup_policy_assignment" "this" {
   asset_id = oci_core_volume.this[
     each.key
   ].id
-
 
   ########################################
   # Existing Backup Policy OCID
@@ -134,7 +127,6 @@ resource "oci_core_volume_backup" "this" {
 
   for_each = var.volume_backups
 
-
   ########################################
   # Source Volume
   ########################################
@@ -142,7 +134,6 @@ resource "oci_core_volume_backup" "this" {
   volume_id = local.backup_volume_ids[
     each.key
   ]
-
 
   ########################################
   # Backup Compartment
@@ -158,7 +149,6 @@ resource "oci_core_volume_backup" "this" {
     var.default_compartment_id
   )
 
-
   ########################################
   # Backup Display Name
   ########################################
@@ -168,7 +158,6 @@ resource "oci_core_volume_backup" "this" {
     "${each.key}-backup"
   )
 
-
   ########################################
   # Backup Type
   ########################################
@@ -176,7 +165,6 @@ resource "oci_core_volume_backup" "this" {
   type = upper(
     each.value.type
   )
-
 
   ########################################
   # Backup Encryption
@@ -201,7 +189,6 @@ resource "oci_core_volume_attachment" "this" {
 
   for_each = var.volume_attachments
 
-
   ########################################
   # Volume
   ########################################
@@ -210,7 +197,6 @@ resource "oci_core_volume_attachment" "this" {
     each.key
   ]
 
-
   ########################################
   # Compute Instance
   ########################################
@@ -218,7 +204,6 @@ resource "oci_core_volume_attachment" "this" {
   instance_id = local.attachment_instance_ids[
     each.key
   ]
-
 
   ########################################
   # Attachment Type
@@ -230,13 +215,11 @@ resource "oci_core_volume_attachment" "this" {
     each.value.attachment_type
   )
 
-
   ########################################
   # Attachment Display Name
   ########################################
 
   display_name = each.value.display_name
-
 
   ########################################
   # Read Only
@@ -244,20 +227,17 @@ resource "oci_core_volume_attachment" "this" {
 
   is_read_only = each.value.is_read_only
 
-
   ########################################
   # Shareable
   ########################################
 
   is_shareable = each.value.is_shareable
 
-
   ########################################
   # CHAP
   ########################################
 
   use_chap = each.value.use_chap
-
 
   ########################################
   # Oracle Cloud Agent iSCSI Login
@@ -266,7 +246,6 @@ resource "oci_core_volume_attachment" "this" {
   is_agent_auto_iscsi_login_enabled = (
     each.value.is_agent_auto_iscsi_login_enabled
   )
-
 
   ########################################
   # Encryption in Transit
