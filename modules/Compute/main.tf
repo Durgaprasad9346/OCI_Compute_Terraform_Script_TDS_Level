@@ -40,7 +40,7 @@ resource "oci_core_instance" "this" {
 
     type = "INTEL_VM"
 
-    is_secure_boot_enabled = true
+    is_secure_boot_enabled = each.value.secure_boot_enabled
   }
 
   ########################################
