@@ -1,7 +1,7 @@
 terraform {
   backend "oci" {
     bucket    = "terraform-state"
-    namespace = "YOUR_NAMESPACE"
+    namespace = "axyblpdcnryl"
     key       = "oci-terraform/dev/terraform.tfstate"
     region    = "ap-hyderabad-1"
 
