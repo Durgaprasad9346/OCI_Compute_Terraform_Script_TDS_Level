@@ -4,13 +4,20 @@ environment = "dev"
 
 default_compartment_id = "ocid1.tenancy.oc1..aaaaaaaafhdxwnqamamnvcsnmudrsskljf7ifls2yegl5rcgx4hllgthsm5q"
 
-default_defined_tags = {
-  CostCenter  = "IT"
-  Environment = "dev"
-}
+########################################
+# Default Defined Tags
+#######################################
+
+default_defined_tags = {}
+
+########################################
+# Default Freeform Tags
+########################################
 
 default_freeform_tags = {
-  ManagedBy = "Terraform"
+  ManagedBy   = "Terraform"
+  CostCenter  = "IT"
+  Environment = "dev"
 }
 
 ########################################
@@ -65,6 +72,12 @@ instances = {
     preserve_boot_volume = true
 
     ########################################
+    # Encryption
+    ########################################
+
+    kms_key_id = null
+
+    ########################################
     # Secure Boot
     #
     # C1 = Custom Image Test
@@ -77,6 +90,28 @@ instances = {
     ########################################
 
     ssh_authorized_keys = []
+
+    ########################################
+    # User Data
+    ########################################
+
+    user_data = null
+
+    ########################################
+    # Instance-level Tags
+    ########################################
+
+    defined_tags = {}
+
+    freeform_tags = {}
+
+    ########################################
+    # Block Volumes
+    #
+    # C1 is Compute-only.
+    ########################################
+
+    block_volumes = []
 
   }
 
