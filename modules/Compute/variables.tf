@@ -25,20 +25,29 @@ variable "instances" {
 
   type = map(object({
 
+    ########################################
     # Availability / Placement
+    ########################################
+
     ad = optional(number, 0)
 
     compartment_id = optional(string)
 
     fault_domain = optional(string)
 
+    ########################################
     # Compute Shape
+    ########################################
+
     shape = string
 
     ocpus         = optional(number)
     memory_in_gbs = optional(number)
 
+    ########################################
     # Primary VNIC
+    ########################################
+
     subnet_id = string
 
     assign_public_ip = optional(bool, false)
@@ -49,18 +58,32 @@ variable "instances" {
 
     nsg_ids = optional(list(string), [])
 
+    ########################################
     # SSH
+    #
     # Retained for variable compatibility,
     # but NOT used by main.tf.
+    ########################################
+
     ssh_authorized_keys = optional(list(string), [])
 
+    ########################################
     # User Data
+    ########################################
+
     user_data = optional(string)
 
+    ########################################
     # Instance Source
+    ########################################
+
     instance_source_type = optional(string, "image")
 
     source_id = optional(string)
+
+    ########################################
+    # Boot Volume
+    ########################################
 
     boot_vol_size_gbs = optional(number)
 
@@ -68,12 +91,24 @@ variable "instances" {
 
     kms_key_id = optional(string)
 
+    ########################################
+    # Secure Boot
+    ########################################
+
+    secure_boot_enabled = optional(bool, true)
+
+    ########################################
     # Tags
+    ########################################
+
     defined_tags = optional(map(string), {})
 
     freeform_tags = optional(map(string), {})
 
+    ########################################
     # Block Volume Attachments
+    ########################################
+
     block_volumes = optional(list(object({
 
       volume_id = string
