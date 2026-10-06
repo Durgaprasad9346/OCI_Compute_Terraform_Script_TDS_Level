@@ -12,6 +12,36 @@ variable "default_compartment_id" {
 
 
 ########################################
+# Default Defined Tags
+########################################
+
+variable "default_defined_tags" {
+
+  description = "Default OCI defined tags"
+
+  type = map(string)
+
+  default = {}
+
+}
+
+
+########################################
+# Default Freeform Tags
+########################################
+
+variable "default_freeform_tags" {
+
+  description = "Default OCI freeform tags"
+
+  type = map(string)
+
+  default = {}
+
+}
+
+
+########################################
 # Block Volumes
 ########################################
 
