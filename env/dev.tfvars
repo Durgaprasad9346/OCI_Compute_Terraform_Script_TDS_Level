@@ -23,10 +23,9 @@ default_compartment_id = "ocid1.tenancy.oc1..aaaaaaaafhdxwnqamamnvcsnmudrsskljf7
 # Default Defined Tags
 ########################################
 
-default_defined_tags = {
-  "maxlife.project" = "dmz"
-}
-
+# default_defined_tags = {
+#   "maxlife.project" = "dmz"
+# }
 
 ########################################
 # Default Freeform Tags
