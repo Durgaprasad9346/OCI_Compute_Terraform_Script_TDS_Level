@@ -83,7 +83,7 @@ instances = {
     # C1 = Custom Image Test
     ########################################
 
-    secure_boot_enabled = false
+    secure_boot_enabled = true
 
     ########################################
     # SSH
