@@ -29,11 +29,6 @@ resource "oci_core_instance" "this" {
 
   ########################################
   # Platform Configuration
-  #
-  # Secure Boot
-  #
-  # VM.Standard3.Flex is an Intel shape,
-  # therefore platform type is INTEL_VM.
   ########################################
 
   platform_config {
@@ -95,13 +90,6 @@ resource "oci_core_instance" "this" {
 
   ########################################
   # Metadata
-  #
-  # IMPORTANT:
-  # SSH authorized keys are intentionally
-  # NOT managed by Terraform.
-  #
-  # Existing SSH key on imported instances
-  # will remain untouched.
   ########################################
 
   ########################################
@@ -111,7 +99,7 @@ resource "oci_core_instance" "this" {
   source_details {
 
     source_type = (
-      each.value.instance_source_type == "boot_volume"
+      lower(each.value.instance_source_type) == "bootvolume"
     ) ? "bootVolume" : "image"
 
     source_id = each.value.source_id
