@@ -20,168 +20,99 @@ default_compartment_id = "ocid1.tenancy.oc1..aaaaaaaafhdxwnqamamnvcsnmudrsskljf7
 
 
 ########################################
-# Default Defined Tags
+# Tags
+#
+# Temporarily disabled.
 ########################################
 
 # default_defined_tags = {
 #   "maxlife.project" = "dmz"
 # }
 
-########################################
-# Default Freeform Tags
-########################################
-
-default_freeform_tags = {
-  CostCenter  = "IT"
-  Environment = "dev"
-}
+# default_freeform_tags = {
+#   CostCenter  = "IT"
+#   Environment = "dev"
+# }
 
 
 ########################################
 # Compute Instances
+#
+# Not testing Compute now.
 ########################################
 
-instances = {
-
-  "test-server" = {
-
-    ######################################
-    # Availability Domain
-    ######################################
-
-    ad = 0
-
-
-    ######################################
-    # Compute Shape
-    ######################################
-
-    shape = "VM.Standard3.Flex"
-
-    ocpus         = 1
-    memory_in_gbs = 8
-
-
-    ######################################
-    # Network
-    ######################################
-
-    subnet_id = "ocid1.subnet.oc1.ap-hyderabad-1.aaaaaaaajhuqe7jh4lnr2byjvcf4yp45bsf7qsn3wduaqpmf5ggl4zkdxd7a"
-
-    assign_public_ip = false
-
-    hostname_label = "test-server-bv-bkp"
-
-    nsg_ids = []
-
-
-    ######################################
-    # Instance Source
-    ######################################
-
-    instance_source_type = "bootVolume"
-
-    boot_volume_name = "test-boot"
-
-
-    ######################################
-    # Boot Volume
-    ######################################
-
-    preserve_boot_volume = true
-
-
-    ######################################
-    # Secure Boot
-    ######################################
-
-    secure_boot_enabled = true
-
-
-    ######################################
-    # Resource-specific Tags
-    ######################################
-
-    defined_tags = {}
-
-    freeform_tags = {}
-
-
-    ######################################
-    # Block Volumes
-    #
-    # Not testing Block Storage yet.
-    ######################################
-
-    block_volumes = []
-
-  }
-
-}
+instances = {}
 
 
 ########################################
 # Boot Volumes
+#
+# Not creating/restoring Boot Volumes now.
 ########################################
 
-boot_volumes = {
-
-  "test-boot" = {
-
-    ######################################
-    # Availability Domain
-    ######################################
-
-    availability_domain = "xIzJ:AP-HYDERABAD-1-AD-1"
-
-
-    ######################################
-    # OCI Display Name
-    ######################################
-
-    display_name = "test-server-boot"
-
-
-    ######################################
-    # Existing Boot Volume Backup
-    ######################################
-
-    source_backup_id = "ocid1.bootvolumebackup.oc1.ap-hyderabad-1.abuhsljrsyyxwuanfax4udib65rqstb2ansfbvrk4mpu7sll7ce6kduv5ptq"
-
-
-    ######################################
-    # Boot Volume Performance
-    ######################################
-
-    vpus_per_gb = 10
-
-
-    ######################################
-    # Resource-specific Tags
-    ######################################
-
-    defined_tags = {}
-
-    freeform_tags = {}
-
-  }
-
-}
+boot_volumes = {}
 
 
 ########################################
 # Manual Boot Volume Backups
 #
-# Not testing now.
+# Multiple existing Boot Volumes can be
+# backed up in one Terraform apply.
 ########################################
 
-boot_volume_backups = {}
+boot_volume_backups = {
+
+  ########################################
+  # Boot Volume 1
+  ########################################
+
+  "test-boot-backup-01" = {
+
+    boot_volume_id = "ocid1.bootvolume.oc1.ap-hyderabad-1.abuhsljrjr7jhbhxrjxgmhxh7lhnrcwzcnqyjr6efilbyxurtja5ph44ijfa"
+
+    display_name = "test--compute-boot-backup-01"
+
+    type = "FULL"
+
+  }
+
+
+  ########################################
+  # Boot Volume 2
+  ########################################
+
+  "test-boot-backup-02" = {
+
+    boot_volume_id = "ocid1.bootvolume.oc1.ap-hyderabad-1.abuhsljrtv337jvzz5vmtnu46xbhf64pt2qw6lur3ezv62jqmithpzs7kp7a"
+
+    display_name = "test-compute-01-boot-backup-02"
+
+    type = "FULL"
+
+  }
+
+
+  ########################################
+  # Boot Volume 3
+  ########################################
+
+  #"test-boot-backup-03" = {
+
+   # boot_volume_id = "YOUR_BOOT_VOLUME_OCID_03"
+
+    #display_name = "test-boot-backup-03"
+
+    #type = "FULL"
+
+  #}
+
+}
 
 
 ########################################
 # Block Volumes
 #
-# Not testing now.
+# Not testing Block Storage now.
 ########################################
 
 block_volumes = {}
@@ -189,8 +120,6 @@ block_volumes = {}
 
 ########################################
 # Manual Block Volume Backups
-#
-# Not testing now.
 ########################################
 
 volume_backups = {}
@@ -198,8 +127,6 @@ volume_backups = {}
 
 ########################################
 # Block Volume Attachments
-#
-# Not testing now.
 ########################################
 
 volume_attachments = {}
