@@ -11,6 +11,12 @@ region = "ap-hyderabad-1"
 environment = "dev"
 
 ########################################
+# Cross-Region Replication
+########################################
+
+enable_cross_region_replication = false
+
+########################################
 # Default Compartment
 ########################################
 
@@ -21,11 +27,12 @@ default_compartment_id = "ocid1.tenancy.oc1..aaaaaaaafhdxwnqamamnvcsnmudrsskljf7
 ########################################
 
 # default_defined_tags = {
-#   "maxlife.project" = "dmz"
+#   "maxlife.Project"    = "DAKS"
+#   "maxlife.subproject" = "YOUR_VALID_SUBPROJECT_VALUE"
 # }
 
 # default_freeform_tags = {
-#   CostCenter  = "IT"
+#   ManagedBy  = "Terraform"
 #   Environment = "dev"
 # }
 
@@ -50,8 +57,9 @@ boot_volume_backups = {}
 ########################################
 # Block Volumes
 #
-# Create a new Block Volume and assign
-# an existing custom backup policy.
+# Create a new Block Volume from
+# an existing Block Volume and
+# assign an existing backup policy.
 ########################################
 
 block_volumes = {
@@ -63,7 +71,7 @@ block_volumes = {
 
     source = {
       type = "volume"
-      id: "ocid1.volume.oc1.ap-hyderabad-1.abuhsljrgfaktulbh3b4oo5tsfph7zgjow7sbx5mpt6tuo6dtib5eyodpuwq"
+      id   = "ocid1.volume.oc1.ap-hyderabad-1.abuhsljrgfaktulbh3b4oo5tsfph7zgjow7sbx5mpt6tuo6dtib5eyodpuwq"
     }
 
     backup_policy_id = "ocid1.volumebackuppolicy.oc1.ap-hyderabad-1.amaaaaaabzzfkaiat7mqsvgt2lzt3fwvjwa557yutk6jtvtjtsot7flxwpta"
