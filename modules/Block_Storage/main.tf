@@ -3,7 +3,6 @@
 ########################################
 
 resource "oci_core_volume" "this" {
-
   for_each = var.block_volumes
 
   ########################################
@@ -44,12 +43,6 @@ resource "oci_core_volume" "this" {
 
   ########################################
   # Encryption
-  #
-  # Null / omitted:
-  # OCI Oracle-managed encryption
-  #
-  # OCID supplied:
-  # Customer-managed Vault key
   ########################################
 
   kms_key_id = each.value.kms_key_id
@@ -57,32 +50,44 @@ resource "oci_core_volume" "this" {
   ########################################
   # Volume Source
   #
-  # Empty:
-  # No source_details block is created.
+  # empty:
+  #   No source_details block.
   #
-  # Volume Backup:
-  # Restore the new volume from the
-  # supplied Block Volume Backup OCID.
+  # volume:
+  #   Clone an existing Block Volume.
+  #
+  # volumeBackup:
+  #   Create from an existing backup.
   ########################################
 
   dynamic "source_details" {
-
-    for_each = (
-      lower(each.value.source.type) == "volumebackup"
-      ? [1]
-      : []
-    )
+    for_each = contains(
+      [
+        "volume",
+        "volumebackup"
+      ],
+      lower(each.value.source.type)
+    ) ? [1] : []
 
     content {
-
-      type = "volumeBackup"
+      type = (
+        lower(each.value.source.type) == "volumebackup"
+      ) ? "volumeBackup" : "volume"
 
       id = each.value.source.id
-
     }
-
   }
 
+  ########################################
+  # Tags
+  #
+  # Temporarily disabled.
+  # Enable when OCI tag configuration
+  # is ready.
+  ########################################
+
+  # defined_tags  = var.default_defined_tags
+  # freeform_tags = var.default_freeform_tags
 }
 
 
@@ -91,31 +96,23 @@ resource "oci_core_volume" "this" {
 ########################################
 
 resource "oci_core_volume_backup_policy_assignment" "this" {
-
   for_each = {
-
     for name, volume in var.block_volumes :
-
     name => volume
-
     if try(volume.backup_policy_id, null) != null
-
   }
 
   ########################################
   # Volume to which policy is assigned
   ########################################
 
-  asset_id = oci_core_volume.this[
-    each.key
-  ].id
+  asset_id = oci_core_volume.this[each.key].id
 
   ########################################
   # Existing Backup Policy OCID
   ########################################
 
   policy_id = each.value.backup_policy_id
-
 }
 
 
@@ -124,24 +121,16 @@ resource "oci_core_volume_backup_policy_assignment" "this" {
 ########################################
 
 resource "oci_core_volume_backup" "this" {
-
   for_each = var.volume_backups
 
   ########################################
   # Source Volume
   ########################################
 
-  volume_id = local.backup_volume_ids[
-    each.key
-  ]
+  volume_id = local.backup_volume_ids[each.key]
 
   ########################################
   # Backup Compartment
-  #
-  # Uses the supplied backup compartment
-  # when provided.
-  #
-  # Otherwise uses the module default.
   ########################################
 
   compartment_id = coalesce(
@@ -162,18 +151,10 @@ resource "oci_core_volume_backup" "this" {
   # Backup Type
   ########################################
 
-  type = upper(
-    each.value.type
-  )
+  type = upper(each.value.type)
 
   ########################################
   # Backup Encryption
-  #
-  # Null / omitted:
-  # OCI Oracle-managed encryption
-  #
-  # OCID supplied:
-  # Customer-managed Vault key
   ########################################
 
   kms_key_id = each.value.kms_key_id
@@ -186,29 +167,22 @@ resource "oci_core_volume_backup" "this" {
 ########################################
 
 resource "oci_core_volume_attachment" "this" {
-
   for_each = var.volume_attachments
 
   ########################################
   # Volume
   ########################################
 
-  volume_id = local.attachment_volume_ids[
-    each.key
-  ]
+  volume_id = local.attachment_volume_ids[each.key]
 
   ########################################
   # Compute Instance
   ########################################
 
-  instance_id = local.attachment_instance_ids[
-    each.key
-  ]
+  instance_id = local.attachment_instance_ids[each.key]
 
   ########################################
   # Attachment Type
-  #
-  # Our module currently supports iSCSI.
   ########################################
 
   attachment_type = lower(
@@ -254,5 +228,4 @@ resource "oci_core_volume_attachment" "this" {
   encryption_in_transit_type = (
     each.value.encryption_in_transit_type
   )
-
 }
