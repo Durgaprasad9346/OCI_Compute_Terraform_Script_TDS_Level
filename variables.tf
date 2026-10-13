@@ -3,11 +3,8 @@
 ########################################
 
 variable "region" {
-
   description = "OCI region"
-
-  type = string
-
+  type        = string
 }
 
 
@@ -16,13 +13,10 @@ variable "region" {
 ########################################
 
 variable "environment" {
-
   description = "Deployment environment"
-
-  type = string
+  type        = string
 
   validation {
-
     condition = contains(
       [
         "dev",
@@ -34,9 +28,18 @@ variable "environment" {
     )
 
     error_message = "Environment must be one of: dev, non-prod, prod, or shared_it."
-
   }
+}
 
+
+########################################
+# Cross-Region Replication
+########################################
+
+variable "enable_cross_region_replication" {
+  description = "Enable cross-region replication for managed Boot Volumes and Block Volumes"
+  type        = bool
+  default     = false
 }
 
 
@@ -45,11 +48,8 @@ variable "environment" {
 ########################################
 
 variable "default_compartment_id" {
-
   description = "Default OCI compartment OCID"
-
-  type = string
-
+  type        = string
 }
 
 
@@ -58,13 +58,9 @@ variable "default_compartment_id" {
 ########################################
 
 variable "default_defined_tags" {
-
-  description = "Default OCI defined tags"
-
-  type = map(string)
-
-  default = {}
-
+  description = "Default defined tags"
+  type        = map(string)
+  default     = {}
 }
 
 
@@ -73,13 +69,9 @@ variable "default_defined_tags" {
 ########################################
 
 variable "default_freeform_tags" {
-
-  description = "Default OCI freeform tags"
-
-  type = map(string)
-
-  default = {}
-
+  description = "Default freeform tags"
+  type        = map(string)
+  default     = {}
 }
 
 
@@ -88,111 +80,62 @@ variable "default_freeform_tags" {
 ########################################
 
 variable "instances" {
-
   description = "Compute instance definitions"
-
-  type = any
-
-  default = {}
-
+  type        = any
+  default     = {}
 }
 
 
 ########################################
 # Boot Volumes
-#
-# Used for:
-#
-# Create a new Boot Volume from an
-# existing Boot Volume Backup.
 ########################################
 
 variable "boot_volumes" {
-
   description = "Boot Volume definitions"
-
-  type = any
-
-  default = {}
-
+  type        = any
+  default     = {}
 }
 
 
 ########################################
 # Manual Boot Volume Backups
-#
-# Used for:
-#
-# Taking multiple manual Boot Volume
-# backups during patch / maintenance.
 ########################################
 
 variable "boot_volume_backups" {
-
   description = "Manual Boot Volume backup definitions"
-
-  type = any
-
-  default = {}
-
+  type        = any
+  default     = {}
 }
 
 
 ########################################
 # Block Volumes
-#
-# Used for:
-#
-# 1. Create new Block Volume
-# 2. Create Block Volume from backup
 ########################################
 
 variable "block_volumes" {
-
   description = "Block Volume definitions"
-
-  type = any
-
-  default = {}
-
+  type        = any
+  default     = {}
 }
 
 
 ########################################
 # Block Volume Backups
-#
-# Used for:
-#
-# Taking multiple manual backups of
-# existing Block Volumes.
 ########################################
 
 variable "volume_backups" {
-
   description = "Manual Block Volume backup definitions"
-
-  type = any
-
-  default = {}
-
+  type        = any
+  default     = {}
 }
 
 
 ########################################
 # Block Volume Attachments
-#
-# Used for:
-#
-# Attaching Block Volumes to Compute
-# instances.
 ########################################
 
 variable "volume_attachments" {
-
   description = "Block Volume attachment definitions"
-
-  type = any
-
-  default = {}
-
+  type        = any
+  default     = {}
 }
