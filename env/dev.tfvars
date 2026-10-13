@@ -58,11 +58,12 @@ block_volumes = {
   "test-block-volume" = {
     availability_domain = "xIzJ:AP-HYDERABAD-1-AD-1"
     display_name        = "test-block-volume"
-    size_in_gbs         = 50
+    size_in_gbs         = 100
     vpus_per_gb         = 10
 
     source = {
-      type = "empty"
+      type = "volume"
+      id: "ocid1.volume.oc1.ap-hyderabad-1.abuhsljrgfaktulbh3b4oo5tsfph7zgjow7sbx5mpt6tuo6dtib5eyodpuwq"
     }
 
     backup_policy_id = "ocid1.volumebackuppolicy.oc1.ap-hyderabad-1.amaaaaaabzzfkaiat7mqsvgt2lzt3fwvjwa557yutk6jtvtjtsot7flxwpta"
