@@ -52,9 +52,7 @@ resource "oci_core_instance" "this" {
 
     ######################################
     # Block Volume Management Plugin
-    #
-    # Enables Oracle Cloud Agent to
-    # automatically connect iSCSI volumes.
+    
     ######################################
 
     plugins_config {
