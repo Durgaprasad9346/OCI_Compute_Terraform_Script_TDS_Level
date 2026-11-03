@@ -17,12 +17,7 @@ module "boot_volume" {
   default_freeform_tags = local.common_freeform_tags
 
   ########################################
-  # Boot Volumes
-  #
-  # Example:
-  #
-  # Create a new Boot Volume from
-  # an existing Boot Volume Backup.
+  # Boot Volumes  
   ########################################
 
   boot_volumes = var.boot_volumes
@@ -64,18 +59,7 @@ module "compute" {
   default_freeform_tags = local.common_freeform_tags
 
   ########################################
-  # Compute Instances
-  #
-  # Normal Image-based Server:
-  #
-  #   source_id comes directly from
-  #   var.instances
-  #
-  # Boot Volume-based Server:
-  #
-  #   boot_volume_name is used here to
-  #   find the Boot Volume created by
-  #   the Boot_Volume module.
+  # Compute Instances  
   ########################################
 
   instances = {
@@ -160,13 +144,7 @@ module "block_storage" {
   volume_attachments = var.volume_attachments
 
   ########################################
-  # Compute Instance IDs
-  #
-  # The Compute module creates the
-  # instances first.
-  #
-  # Block Storage uses these IDs when
-  # attaching volumes to servers.
+  # Compute Instance IDs 
   ########################################
 
   compute_instance_ids = module.compute.instance_ids
