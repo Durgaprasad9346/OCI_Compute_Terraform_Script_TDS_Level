@@ -6,14 +6,6 @@ locals {
 
   ########################################
   # Common Defined Tags
-  #
-  # Keep empty for now.
-  #
-  # OCI defined tags must use:
-  # Namespace.TagKey
-  #
-  # Example:
-  # Operations.CostCenter = "IT"
   ########################################
 
   common_defined_tags = var.default_defined_tags
