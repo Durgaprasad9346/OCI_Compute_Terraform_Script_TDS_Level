@@ -77,8 +77,6 @@ resource "oci_core_instance" "this" {
 
     subnet_id = each.value.subnet_id
 
-    assign_public_ip = each.value.assign_public_ip
-
     private_ip = each.value.private_ip
 
     hostname_label = each.value.hostname_label
