@@ -1,8 +1,5 @@
 ########################################
 # Boot Volume
-#
-# Scenario:
-#
 # Create a new Boot Volume from an
 # existing Boot Volume Backup.
 ########################################
@@ -36,10 +33,7 @@ resource "oci_core_boot_volume" "this" {
   )
 
   ########################################
-  # Size
-  #
-  # Optional:
-  # If omitted, source size is retained.
+  # Size 
   ########################################
 
   size_in_gbs = each.value.size_in_gbs
@@ -92,9 +86,6 @@ resource "oci_core_boot_volume" "this" {
 
 ########################################
 # Boot Volume Backup Policy Assignment
-#
-# Assign an existing custom backup policy
-# to the newly created Boot Volume.
 ########################################
 
 resource "oci_core_volume_backup_policy_assignment" "this" {
@@ -123,11 +114,7 @@ resource "oci_core_volume_backup_policy_assignment" "this" {
 
 ########################################
 # Manual Boot Volume Backups
-#
-# Scenario:
-#
-# Take multiple manual backups during
-# patch / maintenance activities.
+# Take multiple manual backups 
 ########################################
 
 resource "oci_core_boot_volume_backup" "this" {
@@ -135,12 +122,7 @@ resource "oci_core_boot_volume_backup" "this" {
   for_each = var.boot_volume_backups
 
   ########################################
-  # Source Boot Volume
-  #
-  # Can come from:
-  #
-  # 1. Direct boot_volume_id
-  # 2. boot_volume_name resolved by locals
+  # Source Boot Volume  
   ########################################
 
   boot_volume_id = local.manual_backup_source_boot_volume_ids[
@@ -166,10 +148,7 @@ resource "oci_core_boot_volume_backup" "this" {
   )
 
   ########################################
-  # Backup Type
-  #
-  # FULL
-  # INCREMENTAL
+  # Backup Type  
   ########################################
 
   type = upper(
