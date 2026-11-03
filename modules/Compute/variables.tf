@@ -103,9 +103,7 @@ variable "instances" {
 
     ########################################
     # SSH
-    #
-    # Retained for variable compatibility,
-    # but NOT used by main.tf.
+    
     ########################################
 
     ssh_authorized_keys = optional(list(string), [])
@@ -120,9 +118,7 @@ variable "instances" {
 
     ########################################
     # Instance Source
-    #
-    # image
-    # bootVolume
+   
     ########################################
 
     instance_source_type = optional(string, "image")
@@ -132,18 +128,6 @@ variable "instances" {
 
     ########################################
     # Boot Volume Reference
-    #
-    # Used when:
-    #
-    # instance_source_type = "bootVolume"
-    #
-    # Example:
-    #
-    # boot_volume_name = "APP01_RECOVERY"
-    #
-    # Root main.tf uses this logical
-    # name to retrieve the Boot Volume
-    # OCID from the Boot_Volume module.
     ########################################
 
     boot_volume_name = optional(string)
@@ -151,9 +135,7 @@ variable "instances" {
 
     ########################################
     # Boot Volume Configuration
-    #
-    # Used when OCI creates the boot
-    # volume automatically from an image.
+    
     ########################################
 
     boot_vol_size_gbs = optional(number)
