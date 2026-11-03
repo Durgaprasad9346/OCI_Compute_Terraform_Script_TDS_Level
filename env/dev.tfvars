@@ -28,9 +28,6 @@ default_compartment_id = "ocid1.tenancy.oc1..aaaaaaaafhdxwnqamamnvcsnmudrsskljf7
 
 ########################################
 # Defined Tags
-#
-# Use the allowed value configured in
-# your OCI maxlife namespace.
 ########################################
 
 default_defined_tags = {
@@ -50,8 +47,6 @@ default_freeform_tags = {
 
 ########################################
 # Compute Instance
-#
-# Custom image + Secure Boot
 ########################################
 
 instances = {
@@ -66,9 +61,7 @@ instances = {
     memory_in_gbs = 8
 
     subnet_id = "ocid1.subnet.oc1.ap-hyderabad-1.aaaaaaaajhuqe7jh4lnr2byjvcf4yp45bsf7qsn3wduaqpmf5ggl4zkdxd7a"
-
-    assign_public_ip = false
-
+    
     hostname_label = "test-server"
 
     nsg_ids = []
