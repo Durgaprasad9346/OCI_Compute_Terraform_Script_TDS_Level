@@ -78,27 +78,6 @@ output "private_ips" {
 }
 
 ########################################
-# Public IPs
-########################################
-
-output "public_ips" {
-
-  description = "Public IP Addresses"
-
-  value = {
-
-    for k, v in data.oci_core_vnic.this :
-
-    k => try(
-      v.public_ip_address,
-      null
-    )
-
-  }
-
-}
-
-########################################
 # Block Volume Attachments
 ########################################
 
