@@ -23,10 +23,7 @@ output "boot_volumes" {
 
 ########################################
 # Boot Volume IDs
-#
-# Used by the Compute module to create
-# a server from the newly created
-# Boot Volume.
+
 ########################################
 
 output "boot_volume_ids" {
