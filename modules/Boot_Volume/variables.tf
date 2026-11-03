@@ -29,9 +29,6 @@ variable "default_freeform_tags" {
 
 ########################################
 # Boot Volumes
-#
-# Scenario:
-#
 # Create a new Boot Volume from an
 # existing scheduled Boot Volume Backup.
 #
@@ -65,22 +62,13 @@ variable "boot_volumes" {
     vpus_per_gb = optional(number, 10)
 
     ########################################
-    # Encryption
-    #
-    # null / omitted:
-    # OCI-managed encryption
-    #
-    # OCID:
-    # Customer-managed Vault key
+    # Encryption    
     ########################################
 
     kms_key_id = optional(string)
 
     ########################################
-    # Existing Backup Policy
-    #
-    # Existing custom OCI Backup Policy
-    # based on server priority.
+    # Existing Backup Policy  
     ########################################
 
     backup_policy_id = optional(string)
@@ -170,11 +158,6 @@ variable "boot_volumes" {
 
 ########################################
 # Manual Boot Volume Backups
-#
-# Scenario:
-#
-# Take multiple manual Boot Volume
-# backups during patch / maintenance.
 ########################################
 
 variable "boot_volume_backups" {
@@ -184,13 +167,7 @@ variable "boot_volume_backups" {
   type = map(object({
 
     ########################################
-    # Source Boot Volume
-    #
-    # Exactly one:
-    #
-    # boot_volume_id
-    # OR
-    # boot_volume_name
+    # Source Boot Volume    
     ########################################
 
     boot_volume_id = optional(string)
@@ -198,20 +175,13 @@ variable "boot_volume_backups" {
     boot_volume_name = optional(string)
 
     ########################################
-    # OCI Backup Display Name
-    #
-    # Example:
-    #
-    # APP01-Patch-Backup-2026-10-06
+    # OCI Backup Display Name    
     ########################################
 
     display_name = optional(string)
 
     ########################################
-    # Backup Type
-    #
-    # FULL
-    # INCREMENTAL
+    # Backup Type    
     ########################################
 
     type = optional(string, "FULL")
@@ -223,13 +193,7 @@ variable "boot_volume_backups" {
     compartment_id = optional(string)
 
     ########################################
-    # Encryption
-    #
-    # null / omitted:
-    # OCI-managed encryption
-    #
-    # OCID:
-    # Customer-managed Vault key
+    # Encryption    
     ########################################
 
     kms_key_id = optional(string)
@@ -251,12 +215,7 @@ variable "boot_volume_backups" {
   default = {}
 
   ########################################
-  # Backup Source Validation
-  #
-  # Exactly one of:
-  #
-  # boot_volume_id
-  # boot_volume_name
+  # Backup Source Validation  
   ########################################
 
   validation {
