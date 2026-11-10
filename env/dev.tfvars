@@ -1,3 +1,4 @@
+
 ########################################
 # OCI Region
 ########################################
@@ -10,13 +11,6 @@ region = "ap-hyderabad-1"
 ########################################
 
 environment = "dev"
-
-
-########################################
-# Cross-Region Replication
-########################################
-
-enable_cross_region_replication = false
 
 
 ########################################
@@ -46,153 +40,87 @@ default_freeform_tags = {
 
 
 ########################################
-# Compute Instance
+# Object Storage
 ########################################
 
-instances = {
+buckets = {
 
-  "test-server" = {
+  "terraform-test-bucket" = {
 
-    ad = 0
-
-    shape = "VM.Standard3.Flex"
-
-    ocpus         = 1
-    memory_in_gbs = 8
-
-    subnet_id = "ocid1.subnet.oc1.ap-hyderabad-1.aaaaaaaajhuqe7jh4lnr2byjvcf4yp45bsf7qsn3wduaqpmf5ggl4zkdxd7a"
-    
-    hostname_label = "test-server"
-
-    nsg_ids = []
-
-    ######################################
-    # Custom Image
-    ######################################
-
-    instance_source_type = "image"
-
-    source_id = "ocid1.image.oc1.ap-hyderabad-1.aaaaaaaa5atcr2tugcttq7pyapjudk6wi7ojvejrjxxz4pqzmxeoljk4hxha"
-
-    boot_vol_size_gbs = 50
-
-    preserve_boot_volume = true
-
-    ######################################
-    # Secure Boot
-    ######################################
-
-    secure_boot_enabled = true
-
-    ######################################
-    # Resource Tags
-    ######################################
-
-    defined_tags = {}
-
-    freeform_tags = {}
-
-    ######################################
-    # Attachments handled by Block Storage
-    ######################################
-
-    block_volumes = []
-
-  }
-
-}
+    # Bucket Configuration
+    versioning   = "Enabled"
+    storage_tier = "Standard"
 
 
-########################################
-# Boot Volumes
-########################################
+    # Lifecycle Policies
+    lifecycle_rules = [
 
-boot_volumes = {}
+      {
+        name        = "archive-after-30-days"
+        action      = "ARCHIVE"
+        target      = "objects"
+        time_amount = 30
+        time_unit   = "DAYS"
+        is_enabled  = true
+      },
+
+      {
+        name        = "delete-after-120-days"
+        action      = "DELETE"
+        target      = "objects"
+        time_amount = 120
+        time_unit   = "DAYS"
+        is_enabled  = true
+      },
+
+      {
+        name        = "delete-previous-versions"
+        action      = "DELETE"
+        target      = "previous-object-versions"
+        time_amount = 120
+        time_unit   = "DAYS"
+        is_enabled  = true
+      },
+
+      {
+        name        = "abort-incomplete-uploads"
+        action      = "ABORT"
+        target      = "multipart-uploads"
+        time_amount = 7
+        time_unit   = "DAYS"
+        is_enabled  = true
+      }
+
+    ]
 
 
-########################################
-# Manual Boot Volume Backups
-########################################
+    # Retention Rules
+    retention_rules = [
 
-boot_volume_backups = {}
+      {
+        display_name = "retain-objects-for-60-days"
+        time_amount  = 60
+        time_unit    = "DAYS"
+      }
+
+    ]
 
 
-########################################
-# Block Volumes
-#
-# Create two new empty volumes.
-# Do not clone an existing volume.
-########################################
-
-block_volumes = {
-
-  "test-block-volume-01" = {
-
-    availability_domain = "xIzJ:AP-HYDERABAD-1-AD-1"
-
-    display_name = "test-block-volume-01"
-
-    size_in_gbs = 100
-
-    vpus_per_gb = 10
-
-    source = {
-      type = "empty"
+    # Logging Configuration
+    logging = {
+      enabled               = true
+      create_log_group      = true
+      log_group_name        = "terraform-object-storage-logs"
+      log_name              = "terraform-test-bucket-write-log"
+      log_category          = "write"
+      retention_duration    = 90
     }
 
-    backup_policy_id = "ocid1.volumebackuppolicy.oc1.ap-hyderabad-1.amaaaaaabzzfkaiat7mqsvgt2lzt3fwvjwa557yutk6jtvtjtsot7flxwpta"
 
-  }
-
-  "test-block-volume-02" = {
-
-    availability_domain = "xIzJ:AP-HYDERABAD-1-AD-1"
-
-    display_name = "test-block-volume-02"
-
-    size_in_gbs = 100
-
-    vpus_per_gb = 10
-
-    source = {
-      type = "empty"
+    # Cross-Region Replication
+    replication = {
+      enabled = false
     }
-
-    backup_policy_id = "ocid1.volumebackuppolicy.oc1.ap-hyderabad-1.amaaaaaabzzfkaiat7mqsvgt2lzt3fwvjwa557yutk6jtvtjtsot7flxwpta"
-
-  }
-
-}
-
-
-########################################
-# Manual Block Volume Backups
-########################################
-
-volume_backups = {}
-
-
-########################################
-# Block Volume Attachments
-########################################
-
-volume_attachments = {
-
-  "test-server-data-01" = {
-
-    volume_name   = "test-block-volume-01"
-    instance_name = "test-server"
-
-    attachment_type = "iscsi"
-
-  }
-
-  "test-server-data-02" = {
-
-    volume_name   = "test-block-volume-02"
-    instance_name = "test-server"
-
-    attachment_type = "iscsi"
 
   }
 
