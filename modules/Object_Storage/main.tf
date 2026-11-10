@@ -9,51 +9,7 @@ data "oci_objectstorage_namespace" "this" {
 
 
 # =====================================================
-# 2. LOCAL CONFIGURATIONS
-# =====================================================
-
-locals {
-
-  # Buckets with logging enabled
-  logging_buckets = {
-    for name, bucket in var.buckets :
-    name => bucket
-    if bucket.logging.enabled
-  }
-
-  # Buckets requiring new log groups
-  new_log_groups = {
-    for name, bucket in local.logging_buckets :
-    name => bucket
-    if bucket.logging.create_log_group
-  }
-
-  # Buckets with lifecycle policies
-  lifecycle_buckets = {
-    for name, bucket in var.buckets :
-    name => bucket
-    if length(bucket.lifecycle_rules) > 0
-  }
-
-  # Buckets with replication enabled
-  replication_buckets = {
-    for name, bucket in var.buckets :
-    name => bucket
-    if bucket.replication.enabled
-  }
-
-  # Common freeform tags
-  common_freeform_tags = merge(
-    var.default_freeform_tags,
-    {
-      ManagedBy = "Terraform"
-    }
-  )
-}
-
-
-# =====================================================
-# 3. CREATE OBJECT STORAGE BUCKETS
+# 2. CREATE OBJECT STORAGE BUCKETS
 # =====================================================
 
 resource "oci_objectstorage_bucket" "this" {
@@ -116,7 +72,7 @@ resource "oci_objectstorage_bucket" "this" {
 
 
 # =====================================================
-# 4. OBJECT STORAGE LIFECYCLE POLICIES
+# 3. OBJECT STORAGE LIFECYCLE POLICIES
 # =====================================================
 
 resource "oci_objectstorage_object_lifecycle_policy" "this" {
@@ -166,7 +122,7 @@ resource "oci_objectstorage_object_lifecycle_policy" "this" {
 
 
 # =====================================================
-# 5. CREATE NEW LOG GROUPS
+# 4. CREATE NEW LOG GROUPS
 # =====================================================
 
 resource "oci_logging_log_group" "this" {
@@ -191,7 +147,7 @@ resource "oci_logging_log_group" "this" {
 
 
 # =====================================================
-# 6. CONFIGURE OBJECT STORAGE LOGGING
+# 5. CONFIGURE OBJECT STORAGE LOGGING
 # =====================================================
 
 resource "oci_logging_log" "this" {
@@ -242,7 +198,7 @@ resource "oci_logging_log" "this" {
 
 
 # =====================================================
-# 7. CROSS-REGION REPLICATION POLICIES
+# 6. CROSS-REGION REPLICATION POLICIES
 # =====================================================
 
 resource "oci_objectstorage_replication_policy" "this" {
