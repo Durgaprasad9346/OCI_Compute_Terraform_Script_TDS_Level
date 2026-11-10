@@ -44,7 +44,7 @@ default_freeform_tags = {
 
 buckets = {
 
-  "terraform-test-bucket" = {
+  "OCI-test-lifecycle" = {
 
     # Bucket Configuration
     versioning   = "Enabled"
