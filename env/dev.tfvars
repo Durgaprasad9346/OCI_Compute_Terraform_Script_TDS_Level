@@ -44,7 +44,7 @@ default_freeform_tags = {
 
 buckets = {
 
-  "OCI-test-lifecycle" = {
+  "OCI-test-2.0" = {
 
     # Bucket Configuration
     versioning   = "Enabled"
