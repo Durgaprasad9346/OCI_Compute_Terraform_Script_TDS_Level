@@ -1,3 +1,4 @@
+
 ########################################
 # Availability Domains
 ########################################
@@ -5,6 +6,7 @@
 data "oci_identity_availability_domains" "this" {
   compartment_id = var.default_compartment_id
 }
+
 
 ########################################
 # Compute Instances
@@ -32,9 +34,7 @@ resource "oci_core_instance" "this" {
   ########################################
 
   platform_config {
-
-    type = "INTEL_VM"
-
+    type                   = "INTEL_VM"
     is_secure_boot_enabled = each.value.secure_boot_enabled
   }
 
@@ -43,16 +43,12 @@ resource "oci_core_instance" "this" {
   ########################################
 
   agent_config {
-
     are_all_plugins_disabled = false
-
-    is_management_disabled = false
-
-    is_monitoring_disabled = false
+    is_management_disabled   = false
+    is_monitoring_disabled   = false
 
     ######################################
     # Block Volume Management Plugin
-    
     ######################################
 
     plugins_config {
@@ -72,14 +68,10 @@ resource "oci_core_instance" "this" {
   ########################################
 
   create_vnic_details {
-
-    subnet_id = each.value.subnet_id
-
-    private_ip = each.value.private_ip
-
+    subnet_id     = each.value.subnet_id
+    private_ip    = each.value.private_ip
     hostname_label = each.value.hostname_label
-
-    nsg_ids = each.value.nsg_ids
+    nsg_ids       = each.value.nsg_ids
   }
 
   ########################################
@@ -87,16 +79,13 @@ resource "oci_core_instance" "this" {
   ########################################
 
   dynamic "shape_config" {
-
     for_each = (
       each.value.ocpus != null &&
       each.value.memory_in_gbs != null
     ) ? [1] : []
 
     content {
-
-      ocpus = each.value.ocpus
-
+      ocpus         = each.value.ocpus
       memory_in_gbs = each.value.memory_in_gbs
     }
   }
@@ -110,16 +99,13 @@ resource "oci_core_instance" "this" {
   ########################################
 
   source_details {
-
     source_type = (
       lower(each.value.instance_source_type) == "bootvolume"
     ) ? "bootVolume" : "image"
 
-    source_id = each.value.source_id
-
+    source_id               = each.value.source_id
     boot_volume_size_in_gbs = each.value.boot_vol_size_gbs
-
-    kms_key_id = each.value.kms_key_id
+    kms_key_id              = each.value.kms_key_id
   }
 
   ########################################
@@ -143,6 +129,7 @@ resource "oci_core_instance" "this" {
   )
 }
 
+
 ########################################
 # Block Volume Attachments
 ########################################
@@ -163,26 +150,36 @@ resource "oci_core_volume_attachment" "this" {
   volume_id = each.value.volume_id
 }
 
+
 ########################################
 # Primary VNIC Information
 ########################################
 
 data "oci_core_vnic_attachments" "this" {
 
-  for_each = oci_core_instance.this
+  # Use statically known instance keys
+  for_each = var.instances
 
-  compartment_id = each.value.compartment_id
+  compartment_id = coalesce(
+    each.value.compartment_id,
+    var.default_compartment_id
+  )
 
-  instance_id = each.value.id
+  # Instance OCID becomes available after instance creation
+  instance_id = oci_core_instance.this[
+    each.key
+  ].id
 
   depends_on = [
     oci_core_instance.this
   ]
 }
 
+
 data "oci_core_vnic" "this" {
 
-  for_each = oci_core_instance.this
+  # Use the same statically known instance keys
+  for_each = var.instances
 
   vnic_id = data.oci_core_vnic_attachments.this[
     each.key
