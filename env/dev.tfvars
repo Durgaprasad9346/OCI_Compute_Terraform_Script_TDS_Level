@@ -97,13 +97,7 @@ buckets = {
     # Retention Rules
     retention_rules = [
 
-      {
-        display_name = "retain-objects-for-60-days"
-        time_amount  = 60
-        time_unit    = "DAYS"
-      }
-
-    ]
+          ]
 
 
     # Logging Configuration
