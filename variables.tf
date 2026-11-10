@@ -1,3 +1,4 @@
+
 ########################################
 # Region
 ########################################
@@ -136,6 +137,17 @@ variable "volume_backups" {
 
 variable "volume_attachments" {
   description = "Block Volume attachment definitions"
+  type        = any
+  default     = {}
+}
+
+
+########################################
+# Object Storage Buckets
+########################################
+
+variable "buckets" {
+  description = "Object Storage bucket configurations"
   type        = any
   default     = {}
 }
