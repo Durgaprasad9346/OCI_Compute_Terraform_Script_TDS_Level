@@ -1,3 +1,4 @@
+
 ########################################
 # Boot Volume Module
 ########################################
@@ -17,7 +18,7 @@ module "boot_volume" {
   default_freeform_tags = local.common_freeform_tags
 
   ########################################
-  # Boot Volumes  
+  # Boot Volumes
   ########################################
 
   boot_volumes = var.boot_volumes
@@ -59,7 +60,7 @@ module "compute" {
   default_freeform_tags = local.common_freeform_tags
 
   ########################################
-  # Compute Instances  
+  # Compute Instances
   ########################################
 
   instances = {
@@ -144,8 +145,38 @@ module "block_storage" {
   volume_attachments = var.volume_attachments
 
   ########################################
-  # Compute Instance IDs 
+  # Compute Instance IDs
   ########################################
 
   compute_instance_ids = module.compute.instance_ids
+}
+
+
+########################################
+# Object Storage Module
+########################################
+
+module "object_storage" {
+
+  source = "./modules/Object_Storage"
+
+  ########################################
+  # Default Compartment
+  ########################################
+
+  default_compartment_id = var.default_compartment_id
+
+  ########################################
+  # Default Tags
+  ########################################
+
+  default_defined_tags = local.common_defined_tags
+
+  default_freeform_tags = local.common_freeform_tags
+
+  ########################################
+  # Object Storage Buckets
+  ########################################
+
+  buckets = var.buckets
 }
