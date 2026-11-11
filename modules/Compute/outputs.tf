@@ -1,3 +1,4 @@
+
 ########################################
 # Complete Instance Details
 ########################################
@@ -13,27 +14,15 @@ output "instances" {
     k => {
 
       id                  = v.id
-
       display_name        = v.display_name
-
       compartment_id      = v.compartment_id
-
       availability_domain = v.availability_domain
-
       shape               = v.shape
-
       state               = v.state
 
       private_ip = data.oci_core_vnic.this[
         k
       ].private_ip_address
-
-      public_ip = try(
-        data.oci_core_vnic.this[
-          k
-        ].public_ip_address,
-        null
-      )
 
     }
 
@@ -92,9 +81,7 @@ output "block_volume_attachments" {
     k => {
 
       volume_id       = v.volume_id
-
       instance_id     = v.instance_id
-
       attachment_type = v.attachment_type
 
     }
