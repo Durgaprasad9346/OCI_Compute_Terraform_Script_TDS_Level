@@ -92,8 +92,6 @@ variable "instances" {
 
     subnet_id = string
 
-    assign_public_ip = optional(bool, false)
-
     private_ip = optional(string)
 
     hostname_label = optional(string)
