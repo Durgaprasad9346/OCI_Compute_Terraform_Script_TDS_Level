@@ -61,21 +61,31 @@ variable "buckets" {
 
     # Logging configuration
     logging = optional(object({
+
       enabled               = optional(bool, true)
       create_log_group      = optional(bool, true)
       log_group_name        = optional(string)
       existing_log_group_id = optional(string)
-      log_name              = optional(string)
-      log_category          = optional(string, "write")
-      retention_duration    = optional(number, 90)
+
+      # Read and Write logging
+      read_enabled  = optional(bool, true)
+      write_enabled = optional(bool, true)
+
+      # Individual log names
+      read_log_name  = optional(string)
+      write_log_name = optional(string)
+
+      # Log retention
+      retention_duration = optional(number, 90)
+
     }), {})
 
     # Cross-region replication
     replication = optional(object({
-      enabled                 = optional(bool, false)
-      policy_name             = optional(string)
-      destination_region_name = optional(string)
-      destination_bucket_name = optional(string)
+      enabled                  = optional(bool, false)
+      policy_name              = optional(string)
+      destination_region_name  = optional(string)
+      destination_bucket_name  = optional(string)
     }), {})
 
   }))
@@ -109,7 +119,7 @@ variable "buckets" {
   }
 
   # -----------------------------------------------------
-  # Logging validation
+  # Logging configuration validation
   # -----------------------------------------------------
 
   validation {
@@ -126,16 +136,18 @@ variable "buckets" {
   }
 
   # -----------------------------------------------------
-  # Logging category validation
+  # At least one logging category validation
   # -----------------------------------------------------
 
   validation {
     condition = alltrue([
       for bucket in values(var.buckets) :
-      contains(["read", "write"], bucket.logging.log_category)
+      !bucket.logging.enabled ? true : (
+        bucket.logging.read_enabled || bucket.logging.write_enabled
+      )
     ])
 
-    error_message = "Logging category must be read or write."
+    error_message = "At least one logging category (read or write) must be enabled when logging is enabled."
   }
 
   # -----------------------------------------------------
