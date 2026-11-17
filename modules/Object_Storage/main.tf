@@ -141,53 +141,60 @@ resource "oci_logging_log_group" "this" {
 
   description = "Object Storage logs managed by Terraform"
 
-  defined_tags = var.default_defined_tags
+  defined_tags  = var.default_defined_tags
   freeform_tags = local.common_freeform_tags
 }
 
 
 # =====================================================
-# 5. CONFIGURE OBJECT STORAGE LOGGING
+# 5. CONFIGURE OBJECT STORAGE READ AND WRITE LOGGING
 # =====================================================
 
 resource "oci_logging_log" "this" {
 
-  for_each = local.logging_buckets
+  for_each = local.logging_log_configs
 
-  display_name = coalesce(
-    each.value.logging.log_name,
-    "${coalesce(each.value.name, each.key)}-write-log"
+  display_name = (
+    each.value.category == "read"
+    ? coalesce(
+        each.value.bucket.logging.read_log_name,
+        "${coalesce(each.value.bucket.name, each.value.bucket_key)}-read-log"
+      )
+    : coalesce(
+        each.value.bucket.logging.write_log_name,
+        "${coalesce(each.value.bucket.name, each.value.bucket_key)}-write-log"
+      )
   )
 
   log_group_id = (
-    each.value.logging.create_log_group
-    ? oci_logging_log_group.this[each.key].id
-    : each.value.logging.existing_log_group_id
+    each.value.bucket.logging.create_log_group
+    ? oci_logging_log_group.this[each.value.bucket_key].id
+    : each.value.bucket.logging.existing_log_group_id
   )
 
   log_type = "SERVICE"
 
   is_enabled = true
 
-  retention_duration = each.value.logging.retention_duration
+  retention_duration = each.value.bucket.logging.retention_duration
 
   configuration {
 
     compartment_id = coalesce(
-      each.value.compartment_id,
+      each.value.bucket.compartment_id,
       var.default_compartment_id
     )
 
     source {
 
-      category    = each.value.logging.log_category
-      resource    = coalesce(each.value.name, each.key)
+      category    = each.value.category
+      resource    = coalesce(each.value.bucket.name, each.value.bucket_key)
       service     = "objectstorage"
       source_type = "OCISERVICE"
     }
   }
 
-  defined_tags = var.default_defined_tags
+  defined_tags  = var.default_defined_tags
   freeform_tags = local.common_freeform_tags
 
   depends_on = [
